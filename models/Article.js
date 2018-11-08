@@ -10,15 +10,25 @@ const ArticleSchema = new Schema({
     type: String,
     required: true
   },
-
   snippet: {
     type: String,
     required: true
+  },
+  favorite: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  articleScraped: {
+    type: Date,
+    default: Date.now
+  },
+  note: {
+    type: Schema.Types.ObjectId,
+    ref: "Note"
   }
 });
 
-// This creates our model from the above schema, using mongoose's model method
 const Article = mongoose.model("Article", ArticleSchema);
 
-// Export the Article model
 module.exports = Article;

@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
   const initPage = () => {
-    $.get("/api/articles").then(data => {
+    $.get("/api/articles?saved=false").then(data => {
       articleContainer.empty();
       if (data && data.length) {
         renderArticles(data);
@@ -27,11 +27,11 @@ $(document).ready(() => {
     const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>").attr("href", article.link).text(article.title)
     const cardButton = $("<a class='btn btn-success save'>Save Article</a>")
     const cardBody = $("<div class='card-body'>").text(article.snippet);
-   
+    // console.log(article);
     card.append(cardHeader, cardBody);
-    card.data("_id", article._id);
     cardHeader.append(cardTitle);
     cardTitle.append(cardLink, cardButton);
+    card.data("_id", article._id);
 
     return card;
   };
@@ -58,16 +58,16 @@ $(document).ready(() => {
   };
 
   const handleArticleSave = () => {
-
-    const articleToSave = $(this).parents(".card").data();
+    console.log($(this).parents(".card").data("_id"))
+    let articleToSave = $(this).parents(".card").data();
     $(this).parents(".card").remove();
 
-    articleToSave.saved = true;
+    articleToSave.favorite = true;
     $.ajax({
       method: "PUT",
-      url: "/api/headlines/" + articleToSave._id,
+      url: "/api/articles/" + articleToSave._id,
       data: articleToSave
-    }).then(function(data) {
+    }).then(data => {
       if (data.saved) {
         initPage();
       }
