@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
   const initPage = () => {
-    $.get("/api/headlines?saved=false").then(data => {
+    $.get("/api/articles").then(data => {
       articleContainer.empty();
       if (data && data.length) {
         renderArticles(data);
@@ -22,22 +22,19 @@ $(document).ready(() => {
   const createCard = (article) => {
 
     const card = $("<div class='card'>");
-    const cardHeader = $("<div class='card-header'>").append(
-      $("<h3>").append(
-        $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
-          .attr("href", article.url)
-          .text(article.headline),
-        $("<a class='btn btn-success save'>Save Article</a>")
-      )
-    );
-
-    const cardBody = $("<div class='card-body'>").text(article.summary);
-
+    const cardHeader = $("<div class='card-header'>");
+    const cardTitle = $("<h2>");
+    const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>").attr("href", article.link).text(article.title)
+    const cardButton = $("<a class='btn btn-success save'>Save Article</a>")
+    const cardBody = $("<div class='card-body'>").text(article.snippet);
+   
     card.append(cardHeader, cardBody);
-
     card.data("_id", article._id);
+    cardHeader.append(cardTitle);
+    cardTitle.append(cardLink, cardButton);
+
     return card;
-  }
+  };
 
   const renderEmpty = () => {
 
@@ -58,7 +55,7 @@ $(document).ready(() => {
       ].join("")
     );
     articleContainer.append(emptyAlert);
-  }
+  };
 
   const handleArticleSave = () => {
 
@@ -75,7 +72,7 @@ $(document).ready(() => {
         initPage();
       }
     });
-  }
+  };
 
   const handleArticleScrape = () => {
     $.get("/api/scrape").then(data => {
@@ -83,7 +80,7 @@ $(document).ready(() => {
       initPage();
       bootbox.alert($("<h3 class='text-center m-top-80'>").text(data.message));
     });
-  }
+  };
 
   const handleArticleClear = () => {
     $.get("api/clear").then(() => {
@@ -92,6 +89,7 @@ $(document).ready(() => {
     });
   }
 
+  initPage();
   const articleContainer = $(".article-container");
   $(document).on("click", ".btn.save", handleArticleSave);
   $(document).on("click", ".scrape-new", handleArticleScrape);
