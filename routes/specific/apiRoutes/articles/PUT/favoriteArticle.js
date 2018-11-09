@@ -1,6 +1,6 @@
 module.exports = (app, db) => {
-    //Get Specific article with its notes
-    app.put("api/articles/:id", (req, res) => {
+    //Update Specific article with its notes
+    app.put("/api/articles/:id", (req, res) => {
         const { id } = req.params;
 
         db.Article.findByIdAndUpdate(id, { $set: { favorite: true }})

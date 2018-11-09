@@ -57,15 +57,20 @@ $(document).ready(() => {
     articleContainer.append(emptyAlert);
   };
 
-  const handleArticleSave = () => {
-    console.log($(this).parents(".card").data("_id"))
-    let articleToSave = $(this).parents(".card").data();
-    $(this).parents(".card").remove();
+  const handleArticleSave = (event) => {
+
+    let articleToSave = $(event.currentTarget)
+      .parents(".card")
+      .data();
+
+    $(event.currentTarget)
+      .parents(".card")
+      .remove();
 
     articleToSave.favorite = true;
     $.ajax({
       method: "PUT",
-      url: "/api/articles/" + articleToSave._id,
+      url: `/api/articles/${articleToSave._id}`,
       data: articleToSave
     }).then(data => {
       if (data.saved) {

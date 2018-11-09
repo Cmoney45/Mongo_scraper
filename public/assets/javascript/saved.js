@@ -61,7 +61,7 @@ $(document).ready(() => {
     const renderNotesList = (data) => {
         // This function handles rendering note list items to our notes modal
         const notesToRender = [];
-        const currentNote;
+        let currentNote;
         if (!data.notes.length) {
             // If we have no notes, just display a message explaining this
             currentNote = $("<li class='list-group-item'>No notes for this article yet.</li>");
@@ -161,6 +161,8 @@ $(document).ready(() => {
                 initPage();
             });
     }
+
+    initPage();
     $(document).on("click", ".btn.delete", handleArticleDelete);
     $(document).on("click", ".btn.notes", handleArticleNotes);
     $(document).on("click", ".btn.save", handleNoteSave);

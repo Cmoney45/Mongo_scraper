@@ -15,5 +15,5 @@ module.exports = (app, db) => {
     require("./articles/POST/specificArticleNote")(app, db);
 
     // Update Favorite Article
-    require("./articles/PUT/favoriteArticle")
+    require("./articles/PUT/favoriteArticle")(app, db);
 };
