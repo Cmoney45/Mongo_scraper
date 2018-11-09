@@ -1,7 +1,8 @@
 module.exports = (app, db) => {
-    //Get all routes that are not favorited
-    app.get("/api/articles?saved=false", (req, res) => {
-        db.Article.find({ favorite: false })
+    //Get Specific article with its notes
+    app.get("/api/notes/:id", (req, res) => {
+        db.Article.findOne({ _id: req.params.id })
+            .populate("note")
             .then(dbArticle => {
                 res.json(dbArticle);
             })

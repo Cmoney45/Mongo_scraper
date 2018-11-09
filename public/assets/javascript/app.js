@@ -1,7 +1,8 @@
 $(document).ready(() => {
 
   const initPage = () => {
-    $.get("/api/articles?saved=false").then(data => {
+    $.get("/api/articles?favorite=false").then(data => {
+
       articleContainer.empty();
       if (data && data.length) {
         renderArticles(data);
@@ -24,7 +25,9 @@ $(document).ready(() => {
     const card = $("<div class='card'>");
     const cardHeader = $("<div class='card-header'>");
     const cardTitle = $("<h2>");
-    const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>").attr("href", article.link).text(article.title)
+    const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
+    .attr("href", article.link).text(article.title)
+
     const cardButton = $("<a class='btn btn-success save'>Save Article</a>")
     const cardBody = $("<div class='card-body'>").text(article.snippet);
     // console.log(article);

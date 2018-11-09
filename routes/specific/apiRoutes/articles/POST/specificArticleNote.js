@@ -3,9 +3,11 @@ module.exports = (app, db) => {
         const { id } = req.params;
 
         db.Note.create(req.body)
-            .then(dbNote => {
-                db.Article.findByIdAndUpdate(id, { $set: { note: dbNote._id } }, { new: true })
-            })
+
+            .then(dbNote => db.Article.findByIdAndUpdate(id, 
+                    { $push: { note: dbNote._id } }, 
+                    { new: true })
+            )
             .then(updatedArticle => {
                 res.json(updatedArticle);
             })
