@@ -1,13 +1,13 @@
 module.exports = (app, db) => {
     app.delete("/api/notes/:id", (req, res) => {
         const noteid = req.params.id;
+        //Find the note in the note DB
         db.Note.findById(noteid)
             .then(dbnote => {
-                console.log(dbnote);
+                // Then find the Article it relates too and pull out the note ID from it's note array
                 db.Article.findByIdAndUpdate(dbnote.article, { $pull: { note: noteid } }, { new: true })
+                    // Then go back to the note array and remove it
                     .then(dbArticleWithRemovedNote => {
-                        console.log(dbArticleWithRemovedNote);
-
                         db.Note.findByIdAndRemove(noteid, (error, removedNote) => {
                             if (error) {
                                 console.log(error);

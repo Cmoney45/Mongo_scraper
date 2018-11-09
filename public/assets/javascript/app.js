@@ -91,7 +91,11 @@ $(document).ready(() => {
   };
 
   const handleArticleClear = () => {
-    $.get("api/clear").then(() => {
+    $.ajax({
+      method: "DELETE",
+      url:"/api/articles/clear"
+    })
+    .then(() => {
       articleContainer.empty();
       initPage();
     });

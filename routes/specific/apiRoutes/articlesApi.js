@@ -13,4 +13,7 @@ module.exports = (app, db) => {
 
     // Update Favorite Article
     require("./articles/PUT/favoriteArticle")(app, db);
+
+    // Delete all articles that aren't favorited
+    require("./articles/DELETE/allNonFavorites")(app, db);
 };

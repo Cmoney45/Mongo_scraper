@@ -174,7 +174,7 @@ $(document).ready(() => {
     }
 
     const handleArticleClear = () => {
-        $.get("api/clear")
+        $.delete("api/articles/clear")
             .then(() => {
                 articleContainer.empty();
                 initPage();
