@@ -1,8 +1,8 @@
 $(document).ready(() => {
 
   const initPage = () => {
-    $.get("/api/articles?favorite=false").then(data => {
-
+    $.get("/api/articles?favorite=false")
+    .then(data => {
       articleContainer.empty();
       if (data && data.length) {
         renderArticles(data);
