@@ -2,9 +2,9 @@ module.exports = (app, db) => {
     //Get all routes that are not favorited
     app.get("/api/articles", (req, res) => {
 
-        console.log(req.query.favorite)
+        console.log(req.query.saved)
 
-        db.Article.find({favorite: req.query.favorite})
+        db.Article.find({saved: req.query.saved})
             .then(dbArticleNotFavorite => {
                 res.json(dbArticleNotFavorite);
             })

@@ -2,7 +2,7 @@ $(document).ready(() => {
     const articleContainer = $(".article-container");
 
     const initPage = () => {
-        $.get("/api/articles?favorite=true").then(data => {
+        $.get("/api/articles?saved=true").then(data => {
 
             articleContainer.empty();
             if (data && data.length) {
@@ -27,7 +27,7 @@ $(document).ready(() => {
         const cardHeader = $("<div class='card-header'>");
         const cardTitle = $("<h2>");
         const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
-            .attr("href", article.link).text(article.title)
+        cardLink.attr("href", article.link).text(article.title)
 
         const cardButton = $("<a class='btn btn-success delete'>Remove from Saved</a>")
         const cardNoteButton = $("<a class='btn btn-danger notes'>Notes</a>")
@@ -86,26 +86,28 @@ $(document).ready(() => {
         // Now append the notesToRender to the note-container inside the note modal
         $(".note-container").append(notesToRender);
     }
+    const handleArticleunSaved = (event) => {
 
-    const handleArticleDelete = (event) => {
-        const articleToDelete = $(event.currentTarget)
-            .parents(".card")
-            .data();
-
+        let articleToSave = $(event.currentTarget)
+          .parents(".card")
+          .data();
+    
         $(event.currentTarget)
-            .parents(".card")
-            .remove();
-
+          .parents(".card")
+          .remove();
+    
+        articleToSave.saved = false;
         $.ajax({
-            method: "DELETE",
-            url: `/api/articles/${articleToDelete._id}`
-        }).then(function (data) {
-            // If this works out, run initPage again which will re-render our list of saved articles
-            if (data.ok) {
-                initPage();
-            }
+          method: "PUT",
+          url: `/api/articles/${articleToSave._id}?saved=false`,
+          data: articleToSave
+        }).then(data => {
+          if (data.saved) {
+            initPage();
+          }
         });
-    }
+      };
+
     const handleArticleNotes = (event) => {
         const currentArticle = $(event.currentTarget)
             .parents(".card")
@@ -182,7 +184,7 @@ $(document).ready(() => {
     }
 
     initPage();
-    $(document).on("click", ".btn.delete", handleArticleDelete);
+    $(document).on("click", ".btn.delete", handleArticleunSaved);
     $(document).on("click", ".btn.notes", handleArticleNotes);
     $(document).on("click", ".btn.save", handleNoteSave);
     $(document).on("click", ".btn.note-delete", handleNoteDelete);

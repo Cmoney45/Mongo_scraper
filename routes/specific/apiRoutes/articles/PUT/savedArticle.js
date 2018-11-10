@@ -3,8 +3,9 @@ module.exports = (app, db) => {
     app.put("/api/articles/:id", (req, res) => {
         
         const { id } = req.params;
+        const savedValue = req.query.saved;
 
-        db.Article.findByIdAndUpdate(id, { $set: { favorite: true }})
+        db.Article.findByIdAndUpdate(id, { $set: { saved: savedValue }})
             .then(dbArticle => {
                 res.json(dbArticle);
             })

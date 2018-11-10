@@ -1,7 +1,7 @@
 $(document).ready(() => {
 
   const initPage = () => {
-    $.get("/api/articles?favorite=false")
+    $.get("/api/articles?saved=false")
     .then(data => {
       articleContainer.empty();
       if (data && data.length) {
@@ -70,10 +70,10 @@ $(document).ready(() => {
       .parents(".card")
       .remove();
 
-    articleToSave.favorite = true;
+    articleToSave.saved = true;
     $.ajax({
       method: "PUT",
-      url: `/api/articles/${articleToSave._id}`,
+      url: `/api/articles/${articleToSave._id}?saved=true`,
       data: articleToSave
     }).then(data => {
       if (data.saved) {
