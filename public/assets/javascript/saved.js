@@ -17,12 +17,12 @@ $(document).ready(() => {
         const articleCards = [];
 
         for (i in articles) {
-            articleCards.push(createCard(articles[i]));
+            articleCards.push(createCard(articles[i], i));
         }
         articleContainer.append(articleCards);
     }
 
-    const createCard = (article) => {
+    const createCard = (article, i) => {
         const card = $("<div class='card'>");
         const cardHeader = $("<div class='card-header'>");
         const cardTitle = $("<h2>");
@@ -67,111 +67,130 @@ $(document).ready(() => {
         let currentNote;
 
         if (!data.notes.length) {
-            // If we have no notes, just display a message explaining this
-            currentNote = $("<li class='list-group-item'>No notes for this article yet.</li>");
+            currentNote = $("<li class='list-group-item'><p>No notes for this article yet.</p></li>");
             notesToRender.push(currentNote);
         } else {
-            // If we do have notes, go through each one
-            for ( i in data.notes ) {
-                // Constructs an li element to contain our noteText and a delete button
-                currentNote = $("<li class='list-group-item note'>")
-                    .text(data.notes[i].body)
-                    .append($("<button class='btn btn-danger note-delete'>x</button>"));
-                // Store the note id on the delete button for easy access when trying to delete
-                currentNote.children("button").data("_id", data.notes[i]._id);
-                // Adding our currentNote to the notesToRender array
-                notesToRender.push(currentNote);
+            for (i in data.notes) {
+
+                const newCurrentNote = $(`<div class="navbar">
+                <a class="navbar-brand">${data.notes[i].body}</a>
+                  <button class="form-inline btn btn-danger note-delete">X</button>
+
+              </div>`)
+
+                newCurrentNote.children("button").data("_id", data.notes[i]._id);
+                notesToRender.push(newCurrentNote);
             }
         }
         // Now append the notesToRender to the note-container inside the note modal
         $(".note-container").append(notesToRender);
     }
+
     const handleArticleunSaved = (event) => {
 
         let articleToSave = $(event.currentTarget)
-          .parents(".card")
-          .data();
-    
+            .parents(".card")
+            .data();
+
         $(event.currentTarget)
-          .parents(".card")
-          .remove();
-    
+            .parents(".card")
+            .remove();
+
         articleToSave.saved = false;
         $.ajax({
-          method: "PUT",
-          url: `/api/articles/${articleToSave._id}?saved=false`,
-          data: articleToSave
+            method: "PUT",
+            url: `/api/articles/${articleToSave._id}?saved=false`,
+            data: articleToSave
         }).then(data => {
-          if (data.saved) {
-            initPage();
-          }
+            if (data.saved) {
+                initPage();
+            }
         });
-      };
+    };
 
     const handleArticleNotes = (event) => {
         const currentArticle = $(event.currentTarget)
             .parents(".card")
             .data();
+        const currentCard = $(event.currentTarget)
+            .parents(".card");
+        const currentState = $(event.currentTarget).text();
 
-        $.get(`/api/articles/${currentArticle._id}`).then(data => {
-            // Constructing our initial HTML to add to the notes modal
-            console.log(data);
-            const modalText = $("<div class='container-fluid text-center'>").append(
-                $("<h4>").text(`Notes For Article: ${currentArticle._id}`),
-                $("<hr>"),
-                $("<ul class='list-group note-container'>"),
-                $("<textarea placeholder='New Note' rows='4' cols='60'>"),
-                $("<button class='btn btn-success save'>Save Note</button>")
-            );
-            // Adding the formatted HTML to the note modal
-            bootbox.dialog({
-                message: modalText,
-                closeButton: true
-            });
-            const noteData = {
-                _id: currentArticle._id,
-                notes: data.note || []
-            };
-            // Adding some information about the article and article notes to the save button for easy access
-            // When trying to add a new note
-            $(".btn.save").data("article", noteData);
-            // renderNotesList will populate the actual note HTML inside of the modal we just created/opened
-            renderNotesList(noteData);
-        });
+        if (currentState === "Notes") {
+
+            $(event.currentTarget).text("Hide")
+
+            $.get(`/api/articles/${currentArticle._id}`)
+                .then(data => {
+                    const noteCard = $("<div class='container-fluid'>");
+                    const noteHeader = $("<h3>").text(`Notes:`);
+                    const noteList = $("<ul class='list-group note-container'>");
+
+                    const newNoteInput = $(`<hr>
+                    <div class="input-group">
+                        
+                        <textarea class="form-control" aria-label="With textarea" placeholder="Write new note here!"></textarea>
+                        <div class="input-group-append" id="button-addon4">
+                            <button class="btn btn-success save" type="button">Save</button>
+                        </div>
+                    </div>`)
+                    noteCard.append(noteHeader, noteList, newNoteInput)
+
+                    currentCard.append(noteCard);
+                    const noteData = {
+                        _id: currentArticle._id,
+                        notes: data.note || []
+                    };
+                    // Adding some information about the article and article notes to the save button for easy access
+                    // When trying to add a new note
+                    $(".btn.save").data("article", noteData);
+                    // renderNotesList will populate the actual note HTML inside of the modal we just created/opened
+                    renderNotesList(noteData);
+                });
+            return;
+        };
+
+        if (currentState === "Hide") {
+            $(event.currentTarget).text("Notes")
+
+            currentCard.children(".container-fluid").remove()
+
+        }
     }
 
     const handleNoteSave = (event) => {
         let noteData;
-        const newNote = $(".bootbox-body textarea").val().trim();
+        const newNote = $(event.currentTarget).parents().siblings("textarea").val().trim();
         const articleId = $(event.currentTarget).data("article")._id;
-        // If we actually have data typed into the note input field, format it
-        // and post it to the "/api/articles" route and send the formatted noteData as well
+        const currentCard = $(event.currentTarget).parents(".card");
+
         if (newNote) {
-            noteData = { 
+            noteData = {
                 body: newNote,
                 article: articleId
             };
             $.post(
-            `/api/articles/${articleId}`, 
-            noteData
+                `/api/articles/${articleId}`,
+                noteData
             )
-            .then((data) => {
-                // When complete, close the modal
-                bootbox.hideAll();
-            });
+                .then((data) => {
+                    currentCard.find(".notes").text("Notes")
+                    currentCard.children(".container-fluid").remove()
+                });
         }
     }
 
     const handleNoteDelete = (event) => {
-        // This function handles the deletion of notes
         const noteToDelete = $(event.currentTarget).data("_id");
-        // Perform an DELETE request to "/api/notes/" with the id of the note we're deleting as a parameter
+        const currentCard = $(event.currentTarget).parents(".card");
+
         $.ajax({
             url: `/api/notes/${noteToDelete}`,
             method: "DELETE"
         }).then(() => {
             // When done, hide the modal
-            bootbox.hideAll();
+            currentCard.find(".notes").text("Notes")
+            currentCard.children(".container-fluid").remove()
         });
     }
 

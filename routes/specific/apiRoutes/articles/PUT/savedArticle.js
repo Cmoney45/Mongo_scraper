@@ -5,7 +5,7 @@ module.exports = (app, db) => {
         const { id } = req.params;
         const savedValue = req.query.saved;
 
-        db.Article.findByIdAndUpdate(id, { $set: { saved: savedValue }})
+        db.Article.findByIdAndUpdate(id, { $set: { saved: savedValue }, }, { new: true })
             .then(dbArticle => {
                 res.json(dbArticle);
             })

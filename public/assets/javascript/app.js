@@ -22,21 +22,27 @@ $(document).ready(() => {
 
   const createCard = (article) => {
 
+    const cardColumn = $("<div class='col-sm-3'>")
     const card = $("<div class='card'>");
     const cardHeader = $("<div class='card-header'>");
     const cardTitle = $("<h2>");
     const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
-    .attr("href", article.link).text(article.title)
+    cardLink.attr("href", article.link).text(article.title)
 
-    const cardButton = $("<a class='btn btn-success save'>Save Article</a>")
-    const cardBody = $("<div class='card-body'>").text(article.snippet);
+    const cardSaveButton = $("<a class='btn btn-success save'>Save Article</a>")
+    const cardBody = $("<div class='card-body'>")
+    const cardSnippet =$("<p>").text(article.snippet);
     // console.log(article);
+    cardColumn.append(card);
     card.append(cardHeader, cardBody);
+
     cardHeader.append(cardTitle);
-    cardTitle.append(cardLink, cardButton);
+    cardTitle.append(cardLink);
+
+    cardBody.append(cardSnippet, cardSaveButton);
     card.data("_id", article._id);
 
-    return card;
+    return cardColumn;
   };
 
   const renderEmpty = () => {
