@@ -5,22 +5,12 @@ html {
   
   body {
     margin-bottom: 80px;
-    background-image: url("");
+    background-image: url("./images/article-break-business-920115.jpg");
   }
-  
-  .card a:not([href]):not([tabindex]).scrape-new {
-    color: #2196F3;
+  .delete, .notes {
+
+    color: white
   }
-  
-  .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 80px;
-    color: white;
-    background-color: #2196f3;
-  }
-  
   .navbar {
     margin-bottom: 0;
   }
@@ -47,7 +37,7 @@ html {
   
   .jumbotron .background-image {
     height: 100%;
-    background-image: url("");
+    background-image: url("./images/crossword-eyeglasses-eyewear-53209.jpg");
     background-size: cover;
   }
   
@@ -78,7 +68,7 @@ html {
   
   .card {
     border-radius: 0;
-    box-shadow: 3px 3px 20px lightslategrey;
+    box-shadow: 5px 5px 30px lightslategrey;
     margin: 20px 0;
   }
   
@@ -88,7 +78,7 @@ html {
     padding-top: 30px;
     padding-bottom: 30px;
   }
-  
+   */
   .card .card-header h2 {
     color: white;
   }
@@ -123,7 +113,6 @@ html {
     padding-left: 10px;
     margin: 0;
     font-weight: 800;
-    background: #0c7cd5;
   }
   
   .navbar-nav > li > a.scrape-new,

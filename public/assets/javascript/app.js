@@ -22,9 +22,9 @@ $(document).ready(() => {
 
   const createCard = (article) => {
 
-    const cardColumn = $("<div class='col-sm-3'>")
+    const cardColumn = $("<div class='col-lg-3 col-md-4'>")
     const card = $("<div class='card'>");
-    const cardHeader = $("<div class='card-header'>");
+    const cardHeader = $("<div class='card-header bg-dark'>");
     const cardTitle = $("<h2>");
     const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
     cardLink.attr("href", article.link).text(article.title)
@@ -49,18 +49,16 @@ $(document).ready(() => {
 
     const emptyAlert = $(
       [
+        "<div class='m-auto'>",
         "<div class='alert alert-warning text-center'>",
-        "<h4>Uh Oh. Looks like we don't have any new articles.</h4>",
+        "<h4>Woh Woh. Looks like we don't have any new articles.</h4>",
         "</div>",
         "<div class='card'>",
-        "<div class='card-header text-center'>",
-        "<h3>What Would You Like To Do?</h3>",
-        "</div>",
         "<div class='card-body text-center'>",
-        "<h4><a class='scrape-new'>Try Scraping New Articles</a></h4>",
-        "<h4><a href='/saved'>Go to Saved Articles</a></h4>",
+        "<h4><a class='scrape-new'>Scrape New Articles</a></h4>",
         "</div>",
-        "</div>"
+        "</div>",
+        "</div?"
       ].join("")
     );
     articleContainer.append(emptyAlert);
@@ -90,9 +88,7 @@ $(document).ready(() => {
 
   const handleArticleScrape = () => {
     $.get("/api/scrape").then(data => {
-
       initPage();
-      bootbox.alert($("<h3 class='text-center m-top-80'>").text(data.message));
     });
   };
 

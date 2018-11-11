@@ -5,6 +5,7 @@ module.exports = (app, db) => {
         console.log(req.query.saved)
 
         db.Article.find({saved: req.query.saved})
+            .sort({articleScraped: -1})
             .then(dbArticleNotFavorite => {
                 res.json(dbArticleNotFavorite);
             })

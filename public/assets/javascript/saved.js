@@ -22,21 +22,24 @@ $(document).ready(() => {
         articleContainer.append(articleCards);
     }
 
-    const createCard = (article, i) => {
+    const createCard = (article) => {
         const card = $("<div class='card'>");
-        const cardHeader = $("<div class='card-header'>");
+        const cardHeader = $("<div class='card-header bg-dark'>");
         const cardTitle = $("<h2>");
-        const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'>")
+        const cardLink = $("<a class='article-link' target='_blank' rel='noopener noreferrer'> ")
+        const buttonSpace =$(" ")
         cardLink.attr("href", article.link).text(article.title)
 
-        const cardButton = $("<a class='btn btn-success delete'>Remove from Saved</a>")
-        const cardNoteButton = $("<a class='btn btn-danger notes'>Notes</a>")
-        const cardBody = $("<div class='card-body'>").text(article.snippet);
+        const cardSaveButton = $("<a class='btn btn-success delete'>Remove from Saved</a>")
+        const cardNoteButton = $(" <a class='btn btn-danger notes'>Notes</a>")
+        const cardBody = $("<div class='card-body'>")
+        const cardSnippet =$("<p>").text(article.snippet);
 
         card.append(cardHeader, cardBody);
         card.data("_id", article._id);
         cardHeader.append(cardTitle);
-        cardTitle.append(cardLink, cardButton, cardNoteButton);
+        cardTitle.append(cardLink);
+        cardBody.append(cardSnippet, cardSaveButton, buttonSpace,cardNoteButton);
         card.append(cardHeader, cardBody);
 
         return card;
