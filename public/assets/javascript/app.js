@@ -1,5 +1,6 @@
 $(document).ready(() => {
 
+  // Start loading the page
   const initPage = () => {
     $.get("/api/articles?saved=false")
     .then(data => {
@@ -12,6 +13,7 @@ $(document).ready(() => {
     });
   }
 
+  // Start rendering the articles
   const renderArticles = (articles) => {
     const articleCards = [];
     for ( i in articles ) {
@@ -20,6 +22,7 @@ $(document).ready(() => {
     articleContainer.append(articleCards);
   }
 
+  // Create the cards for the articles
   const createCard = (article) => {
 
     const cardColumn = $("<div class='col-lg-3 col-md-4'>")
@@ -32,7 +35,7 @@ $(document).ready(() => {
     const cardSaveButton = $("<a class='btn btn-success save'>Save Article</a>")
     const cardBody = $("<div class='card-body'>")
     const cardSnippet =$("<p>").text(article.snippet);
-    // console.log(article);
+
     cardColumn.append(card);
     card.append(cardHeader, cardBody);
 
@@ -45,9 +48,10 @@ $(document).ready(() => {
     return cardColumn;
   };
 
+  // If no articles are in database
   const renderEmpty = () => {
 
-    const emptyAlert = $(
+    const empty = $(
       [
         "<div class='m-auto'>",
         "<div class='alert alert-warning text-center'>",
@@ -61,9 +65,10 @@ $(document).ready(() => {
         "</div?"
       ].join("")
     );
-    articleContainer.append(emptyAlert);
+    articleContainer.append(empty);
   };
 
+  // Save an article
   const handleArticleSave = (event) => {
 
     let articleToSave = $(event.currentTarget)
@@ -86,12 +91,14 @@ $(document).ready(() => {
     });
   };
 
+  // Scrape new articles
   const handleArticleScrape = () => {
     $.get("/api/scrape").then(data => {
       initPage();
     });
   };
 
+  // Clear all articles
   const handleArticleClear = () => {
     $.ajax({
       method: "DELETE",

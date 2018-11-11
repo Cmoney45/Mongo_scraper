@@ -1,6 +1,8 @@
 $(document).ready(() => {
+    // Store Article container to use throught JS
     const articleContainer = $(".article-container");
 
+    // Load Page data
     const initPage = () => {
         $.get("/api/articles?saved=true").then(data => {
 
@@ -13,6 +15,7 @@ $(document).ready(() => {
         });
     }
 
+    //Start Rendering Articles
     const renderArticles = (articles) => {
         const articleCards = [];
 
@@ -22,6 +25,7 @@ $(document).ready(() => {
         articleContainer.append(articleCards);
     }
 
+    // Create the card
     const createCard = (article) => {
         const card = $("<div class='card'>");
         const cardHeader = $("<div class='card-header bg-dark'>");
@@ -45,27 +49,27 @@ $(document).ready(() => {
         return card;
     }
 
+    // Render if No cards
     const renderEmpty = () => {
-        const emptyAlert = $(
+        const empty = $(
             [
-                "<div class='alert alert-warning text-center'>",
-                "<h4>Uh Oh. Looks like we don't have any saved articles.</h4>",
-                "</div>",
-                "<div class='card'>",
-                "<div class='card-header text-center'>",
-                "<h3>Would You Like to Browse Available Articles?</h3>",
-                "</div>",
-                "<div class='card-body text-center'>",
-                "<h4><a href='/'>Browse Articles</a></h4>",
-                "</div>",
-                "</div>"
+              "<div class='m-auto'>",
+              "<div class='alert alert-warning text-center'>",
+              "<h4>Woh Woh. Looks like we don't have any new articles.</h4>",
+              "</div>",
+              "<div class='card'>",
+              "<div class='card-body text-center'>",
+              "<h4><a class='scrape-new'>Scrape New Articles</a></h4>",
+              "</div>",
+              "</div>",
+              "</div?"
             ].join("")
-        );
-        articleContainer.append(emptyAlert);
+          );
+        articleContainer.append(empty);
     }
 
+    // Render the Notes list
     const renderNotesList = (data) => {
-        // This function handles rendering note list items to our notes modal
         const notesToRender = [];
         let currentNote;
 
@@ -75,20 +79,22 @@ $(document).ready(() => {
         } else {
             for (i in data.notes) {
 
-                const newCurrentNote = $(`<div class="navbar">
-                <a class="navbar-brand">${data.notes[i].body}</a>
-                  <button class="form-inline btn btn-danger note-delete">X</button>
-
-              </div>`)
+                const newCurrentNote = $(`
+                <div class="navbar">
+                    <a class="navbar-brand">${data.notes[i].body}</a>
+                    <button class="form-inline btn btn-danger note-delete">X</button>
+                </div>`)
 
                 newCurrentNote.children("button").data("_id", data.notes[i]._id);
                 notesToRender.push(newCurrentNote);
             }
         }
-        // Now append the notesToRender to the note-container inside the note modal
-        $(".note-container").append(notesToRender);
-    }
 
+        data.currentCard.find(".note-container").append(notesToRender);
+
+    };
+
+    // Action for un-saving an article
     const handleArticleunSaved = (event) => {
 
         let articleToSave = $(event.currentTarget)
@@ -111,6 +117,7 @@ $(document).ready(() => {
         });
     };
 
+    // Action for when Notes button is pressed
     const handleArticleNotes = (event) => {
         const currentArticle = $(event.currentTarget)
             .parents(".card")
@@ -142,12 +149,10 @@ $(document).ready(() => {
                     currentCard.append(noteCard);
                     const noteData = {
                         _id: currentArticle._id,
-                        notes: data.note || []
+                        notes: data.note || [],
+                        currentCard
                     };
-                    // Adding some information about the article and article notes to the save button for easy access
-                    // When trying to add a new note
                     $(".btn.save").data("article", noteData);
-                    // renderNotesList will populate the actual note HTML inside of the modal we just created/opened
                     renderNotesList(noteData);
                 });
             return;
@@ -161,6 +166,7 @@ $(document).ready(() => {
         }
     }
 
+    // Action for when a note is to be saved
     const handleNoteSave = (event) => {
         let noteData;
         const newNote = $(event.currentTarget).parents().siblings("textarea").val().trim();
@@ -183,6 +189,7 @@ $(document).ready(() => {
         }
     }
 
+    // Delete a note
     const handleNoteDelete = (event) => {
         const noteToDelete = $(event.currentTarget).data("_id");
         const currentCard = $(event.currentTarget).parents(".card");
@@ -191,18 +198,9 @@ $(document).ready(() => {
             url: `/api/notes/${noteToDelete}`,
             method: "DELETE"
         }).then(() => {
-            // When done, hide the modal
             currentCard.find(".notes").text("Notes")
             currentCard.children(".container-fluid").remove()
         });
-    }
-
-    const handleArticleClear = () => {
-        $.delete("api/articles/clear")
-            .then(() => {
-                articleContainer.empty();
-                initPage();
-            });
     }
 
     initPage();
@@ -210,5 +208,4 @@ $(document).ready(() => {
     $(document).on("click", ".btn.notes", handleArticleNotes);
     $(document).on("click", ".btn.save", handleNoteSave);
     $(document).on("click", ".btn.note-delete", handleNoteDelete);
-    $(".clear").on("click", handleArticleClear);
 });
